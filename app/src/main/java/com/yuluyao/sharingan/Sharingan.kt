@@ -94,36 +94,44 @@ class Sharingan : View {
     // middle ring
     paint.style = Paint.Style.STROKE
     paint.strokeWidth = mRadius * 0.02f
-    paint.color= 0x66000000.toInt()
+    paint.color = 0x66000000.toInt()
     val middleRadius = mRadius * 0.6f
+//    val shader = RadialGradient(0f, 0f, middleRadius, intArrayOf(0x33000000,0x00000000), null,
+//      Shader.TileMode.MIRROR)
+//    paint.shader = shader
     canvas.drawCircle(0f, 0f, middleRadius, paint)
 
     // out ring
     paint.strokeWidth = mRadius * 0.06f
-    paint.color= 0xff000000.toInt()
+    paint.color = 0xff000000.toInt()
     val outRadius = mRadius * 0.97f
     canvas.drawCircle(0f, 0f, outRadius, paint)
 
     // gou
     paint.style = Paint.Style.FILL
-    val gouRadius= mRadius * 0.125f
+    val gouRadius = mRadius * 0.125f
     for (degree in 0 until 360 step 120) {
       canvas.save()
       canvas.rotate(degree.toFloat())
 
+      // 画勾玉
       val gou = Path()
       gou.addCircle(middleRadius, 0f, gouRadius, Path.Direction.CW)
       val rectF = RectF(middleRadius - gouRadius * 2, 0 - gouRadius,
         middleRadius + gouRadius * 2, 0 + gouRadius * 3)
       gou.arcTo(rectF, -90f, 90f)
       val rectF2 = RectF(middleRadius, 0f, middleRadius + gouRadius * 2, 0 + gouRadius * 2)
-
-      gou.arcTo(rectF2,0f,-90f)
+      gou.arcTo(rectF2, 0f, -90f)
 
       canvas.drawPath(gou, paint)
-
       canvas.restore()
     }
+
+    // shader
+//    val shader = RadialGradient(0f,0f,middleRadius, 0x33000000.toInt(), 0x00000000.toInt() ,Shader.TileMode.CLAMP)
+//    paint.shader= shader
+//    val shader = RadialGradient(0f,0f,middleRadius, intArrayOf(), floatArrayOf(),Shader.TileMode.CLAMP)
+
 
   }
 
