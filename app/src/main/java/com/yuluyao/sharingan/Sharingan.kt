@@ -111,24 +111,48 @@ class Sharingan : View {
 
       // 画勾玉
       val gou = Path()
-      gou.addCircle(middleRadius, 0f, gouRadius, Path.Direction.CW)
-      val rectF = RectF(middleRadius - gouRadius * 2, 0 - gouRadius,
-        middleRadius + gouRadius * 2, 0 + gouRadius * 3)
-      gou.arcTo(rectF, -90f, 90f)
-      val rectF2 = RectF(middleRadius, 0f, middleRadius + gouRadius * 2, 0 + gouRadius * 2)
-      gou.arcTo(rectF2, 0f, -90f)
+//      gouPath.addCircle(middleRadius, 0f, gouRadius, Path.Direction.CW)
+//      val rectF = RectF(middleRadius - gouRadius * 2, 0 - gouRadius,
+//        middleRadius + gouRadius * 2, 0 + gouRadius * 3)
+//      gouPath.arcTo(rectF, -90f, 90f)
+//      val rectF2 = RectF(middleRadius, 0f, middleRadius + gouRadius * 2, 0 + gouRadius * 2)
+//      gouPath.arcTo(rectF2, 0f, -90f)
 
-      canvas.drawPath(gou, paint)
+      canvas.drawPath(obtainGouPath(middleRadius), paint)
       canvas.restore()
     }
 
     // shader
-    val shader = RadialGradient(0f, 0f, mRadius,
-      intArrayOf(0x44000000, 0x00000000, 0x44000000), floatArrayOf(0f, 0.6f, 1f),
-      Shader.TileMode.CLAMP)
-    paint.shader = shader
+//    val shader = RadialGradient(0f, 0f, mRadius,
+//      intArrayOf(0x44000000, 0x00000000, 0x44000000), floatArrayOf(0f, 0.6f, 1f),
+//      Shader.TileMode.CLAMP)
+    paint.shader = obtainShader()
     canvas.drawCircle(0f, 0f, middleRadius, paint)
     paint.shader = null
+  }
+
+  val gouPath = Path()
+  private fun obtainGouPath(middleRadius: Float): Path {
+    if (gouPath.isEmpty) {
+      val gouRadius = mRadius * 0.125f
+      gouPath.addCircle(middleRadius, 0f, gouRadius, Path.Direction.CW)
+      val rectF = RectF(middleRadius - gouRadius * 2, 0 - gouRadius,
+        middleRadius + gouRadius * 2, 0 + gouRadius * 3)
+      gouPath.arcTo(rectF, -90f, 90f)
+      val rectF2 = RectF(middleRadius, 0f, middleRadius + gouRadius * 2, 0 + gouRadius * 2)
+      gouPath.arcTo(rectF2, 0f, -90f)
+    }
+    return gouPath
+  }
+
+  var shader:Shader?=null
+  private fun obtainShader() :Shader{
+    if (shader == null) {
+      shader = RadialGradient(0f, 0f, mRadius,
+        intArrayOf(0x44000000, 0x00000000, 0x44000000), floatArrayOf(0f, 0.6f, 1f),
+        Shader.TileMode.CLAMP)
+    }
+    return shader!!
   }
 
 }
