@@ -27,9 +27,6 @@ class Sharingan : View {
    */
   private var mRadius = 0f
 
-//  private var centerRadius= 0f
-//  private var dotRadius=0f
-
   init {
     paint.color = Color.BLACK
     paint.style = Paint.Style.STROKE
@@ -42,7 +39,6 @@ class Sharingan : View {
     val heightMode = MeasureSpec.getMode(heightMeasureSpec)
     val widthSize = MeasureSpec.getSize(widthMeasureSpec)
     val heightSize = MeasureSpec.getSize(heightMeasureSpec)
-    mRadius = Math.min(widthSize.toFloat(), heightSize.toFloat()) / 2
 
     Log.v("Sharingan", "widthSize:$widthSize , heightSize:$heightSize")
     setMeasuredDimension(getViewSize(widthMeasureSpec), getViewSize(heightMeasureSpec))
@@ -72,6 +68,8 @@ class Sharingan : View {
   override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
     mWidth = w.toFloat()
     mHeight = h.toFloat()
+    mRadius = Math.min(mWidth, mHeight) / 2
+
   }
 
 
@@ -96,9 +94,6 @@ class Sharingan : View {
     paint.strokeWidth = mRadius * 0.02f
     paint.color = 0x66000000.toInt()
     val middleRadius = mRadius * 0.6f
-//    val shader = RadialGradient(0f, 0f, middleRadius, intArrayOf(0x33000000,0x00000000), null,
-//      Shader.TileMode.MIRROR)
-//    paint.shader = shader
     canvas.drawCircle(0f, 0f, middleRadius, paint)
 
     // out ring
@@ -110,7 +105,7 @@ class Sharingan : View {
     // gou
     paint.style = Paint.Style.FILL
     val gouRadius = mRadius * 0.125f
-    for (degree in 0 until 360 step 120) {
+    for (degree in -45 until 360 step 120) {
       canvas.save()
       canvas.rotate(degree.toFloat())
 
@@ -128,11 +123,12 @@ class Sharingan : View {
     }
 
     // shader
-//    val shader = RadialGradient(0f,0f,middleRadius, 0x33000000.toInt(), 0x00000000.toInt() ,Shader.TileMode.CLAMP)
-//    paint.shader= shader
-//    val shader = RadialGradient(0f,0f,middleRadius, intArrayOf(), floatArrayOf(),Shader.TileMode.CLAMP)
-
-
+    val shader = RadialGradient(0f, 0f, mRadius,
+      intArrayOf(0x44000000, 0x00000000, 0x44000000), floatArrayOf(0f, 0.6f, 1f),
+      Shader.TileMode.CLAMP)
+    paint.shader = shader
+    canvas.drawCircle(0f, 0f, middleRadius, paint)
+    paint.shader = null
   }
 
 }
