@@ -9,44 +9,43 @@ class Itachi : Eye {
   constructor(context: Context) : super(context)
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
+  private val rotateMatrix = Matrix()
 
-  private val pInnerA = PointF()
-  private val pInnerB = PointF()
-  private val pOuterC = PointF()
-  private val pCtrlA = PointF()
-  private val pCtrlB = PointF()
+  init {
+    rotateMatrix.setRotate(120f, 0f, 0f)
+  }
 
+  private val pA = PointF()
+  private val pB = PointF()
+  private val pC1 = PointF()
+  private val pC2 = PointF()
 
   override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
     super.onSizeChanged(w, h, oldw, oldh)
-    // inner A
-    val innerRadius = mRadius * 0.2f
-    pInnerA.x = innerRadius
-    pInnerA.y = 0f
-    // inner B
-    val degreeInnerB = 120
-    val xb = (0 + innerRadius * Math.cos(degreeInnerB * Math.PI / 180)).toFloat()
-    val yb = (0 + innerRadius * Math.sin(degreeInnerB * Math.PI / 180)).toFloat()
-    pInnerB.x = xb
-    pInnerB.y = yb
-    // outer C
-    val degreeOuter = 90
-    val xc = (0 + mRadius * Math.cos(degreeOuter * Math.PI / 180)).toFloat()
-    val yc = (0 + mRadius * Math.sin(degreeOuter * Math.PI / 180)).toFloat()
-    pOuterC.x = xc
-    pOuterC.y = yc
-    // control A
-    val degreeCA = 60
-    val xca = (0 + mRadius * 0.8 * Math.cos(degreeCA * Math.PI / 180)).toFloat()
-    val yca = (0 + mRadius * 0.8 * Math.sin(degreeCA * Math.PI / 180)).toFloat()
-    pCtrlA.x = xca
-    pCtrlA.y = yca
-    // control B
-    val degreeCB = 80
-    val xcb = (0 + mRadius * 0.7 * Math.cos(degreeCB * Math.PI / 180)).toFloat()
-    val ycb = (0 + mRadius * 0.7 * Math.sin(degreeCB * Math.PI / 180)).toFloat()
-    pCtrlB.x = xcb
-    pCtrlB.y = ycb
+    // point A
+    val innerRadius = mRadius * 0.3f
+    pA.x = innerRadius
+    pA.y = 0f
+    // point B
+    val degree_pb = 90
+    val x_pb = (0 + mRadius * Math.cos(degree_pb * Math.PI / 180)).toFloat()
+    val y_pb = (0 + mRadius * Math.sin(degree_pb * Math.PI / 180)).toFloat()
+    pB.x = x_pb
+    pB.y = y_pb
+    // point C1
+    val radius_c1 = mRadius * 0.85
+    val x_c1 = innerRadius
+    val y_c1 = Math.sqrt((radius_c1 * radius_c1 - innerRadius * innerRadius)).toFloat()
+    pC1.x = x_c1
+    pC1.y = y_c1
+    // point C2
+    val radiusC2 = mRadius * 0.4
+    val x_c2 = innerRadius
+    val y_c2 = -Math.sqrt((radiusC2 * radiusC2 - innerRadius * innerRadius)).toFloat()
+    val array = floatArrayOf(x_c2, y_c2)
+    rotateMatrix.mapPoints(array)
+    pC2.x = array[0]
+    pC2.y = array[1]
 
   }
 
@@ -67,33 +66,37 @@ class Itachi : Eye {
     val outRadius = mRadius * 0.97f
     canvas.drawCircle(0f, 0f, outRadius, paint)
 
-    // yu
-//    paint.style = Paint.Style.FILL
-//    paint.color = 0xff000000.toInt()
-//    val path = Path()
-//    path.moveTo(0f, 0f)
-//    path.quadTo(60f, 60f, mRadius, 0f)
-//    canvas.drawPath(path, paint)
 
-
-    // 画花
+    // 画万花筒
     paint.style = Paint.Style.FILL
-    paint.color = Color.BLACK
     val path = Path()
-    path.moveTo(pInnerA.x, pInnerA.y)
-    path.quadTo(pCtrlA.x, pCtrlA.y, pOuterC.x, pOuterC.y)
-    path.quadTo(pCtrlB.x, pCtrlB.y, pInnerB.x, pInnerB.y)
+    path.moveTo(pA.x, pA.y)
+    for (d in 0 until 360 step 120) {
+      path.quadTo(pC1.x, pC1.y, pB.x, pB.y)
+      rotatePoint(pA, rotateMatrix)
+      path.quadTo(pC2.x, pC2.y, pA.x, pA.y)
+      rotatePoint(pC1, rotateMatrix)
+      rotatePoint(pB, rotateMatrix)
+      rotatePoint(pC2, rotateMatrix)
+    }
+    path.addCircle(0f, 0f, mRadius * 0.125f, Path.Direction.CCW)
+    path.fillType = Path.FillType.WINDING
     canvas.drawPath(path, paint)
 
-
     // test points
-    paint.style = Paint.Style.STROKE
-    paint.strokeWidth = 2 * density
-    paint.color = Color.GREEN
-    canvas.drawPoints(floatArrayOf(pInnerA.x, pInnerA.y, pInnerB.x, pInnerB.y, pOuterC.x, pOuterC.y,
-      pCtrlA.x, pCtrlA.y, pCtrlB.x, pCtrlB.y), paint)
+//    paint.style = Paint.Style.STROKE
+//    paint.strokeWidth = 2 * density
+//    paint.color = Color.GREEN
+//    canvas.drawPoints(floatArrayOf(pA.x, pA.y, pB.x, pB.y, pC1.x, pC1.y, pC2.x, pC2.y), paint)
+
+  }
 
 
+  private fun rotatePoint(point: PointF, matrix: Matrix) {
+    val array = floatArrayOf(point.x, point.y)
+    matrix.mapPoints(array)
+    point.x = array[0]
+    point.y = array[1]
   }
 
 }
