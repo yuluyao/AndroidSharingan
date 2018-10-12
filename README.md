@@ -7,7 +7,7 @@
 ![鼬神](pictures/Itachi.png)
 
 ### 宇智波泉奈
-![宇智波泉奈](pictures/Izuno.png)
+![宇智波泉奈](pictures/Izuna.png)
 
 ### 宇智波斑
 ![宇智波斑](pictures/Madara.png)
