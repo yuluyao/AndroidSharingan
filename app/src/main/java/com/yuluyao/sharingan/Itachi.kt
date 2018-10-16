@@ -51,10 +51,12 @@ class Itachi : Eye {
 
 
   override fun onDraw(canvas: Canvas?) {
+    super.onDraw(canvas)
     canvas ?: return
+    canvas.save()
     canvas.translate(mWidth / 2, mHeight / 2)
 
-    // red background
+    /*// red background
     paint.style = Paint.Style.FILL
     paint.color = 0xffac0003.toInt()
     canvas.drawCircle(0f, 0f, mRadius, paint)
@@ -64,11 +66,12 @@ class Itachi : Eye {
     paint.strokeWidth = mRadius * 0.06f
     paint.color = 0xff000000.toInt()
     val outRadius = mRadius * 0.97f
-    canvas.drawCircle(0f, 0f, outRadius, paint)
+    canvas.drawCircle(0f, 0f, outRadius, paint)*/
 
 
     // 画万花筒
     paint.style = Paint.Style.FILL
+    paint.color= Color.BLACK
     val path = Path()
     path.moveTo(pA.x, pA.y)
     for (d in 0 until 360 step 120) {
@@ -88,6 +91,8 @@ class Itachi : Eye {
 //    paint.strokeWidth = 2 * density
 //    paint.color = Color.GREEN
 //    canvas.drawPoints(floatArrayOf(pA.x, pA.y, pB.x, pB.y, pC1.x, pC1.y, pC2.x, pC2.y), paint)
+
+    canvas.restore()
 
   }
 
