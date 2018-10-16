@@ -37,4 +37,12 @@
       app:layout_constraintRight_toRightOf="parent"
       />
 
+    <com.yuluyao.sharingan.Sasuke
+      android:layout_width="120dp"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/itachi"
+      android:layout_height="120dp"
+      android:id="@+id/sasuke"
+      />
+
 </android.support.constraint.ConstraintLayout>

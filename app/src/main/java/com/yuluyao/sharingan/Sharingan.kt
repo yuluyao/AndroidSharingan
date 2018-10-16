@@ -5,8 +5,6 @@ import android.graphics.*
 import android.util.AttributeSet
 
 class Sharingan : Eye {
-
-
   constructor(context: Context) : super(context)
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
@@ -29,8 +27,8 @@ class Sharingan : Eye {
 
     // middle ring
     paint.style = Paint.Style.STROKE
-    paint.strokeWidth = mRadius * 0.02f
-    paint.color = 0x66000000.toInt()
+    paint.strokeWidth = mRadius * 0.03f
+    paint.color = 0x55000000.toInt()
     val middleRadius = mRadius * 0.6f
     canvas.drawCircle(0f, 0f, middleRadius, paint)
 

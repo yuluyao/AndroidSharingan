@@ -46,9 +46,7 @@ class Itachi : Eye {
     rotateMatrix.mapPoints(array)
     pC2.x = array[0]
     pC2.y = array[1]
-
   }
-
 
   override fun onDraw(canvas: Canvas?) {
     super.onDraw(canvas)
@@ -56,18 +54,12 @@ class Itachi : Eye {
     canvas.save()
     canvas.translate(mWidth / 2, mHeight / 2)
 
-    /*// red background
-    paint.style = Paint.Style.FILL
-    paint.color = 0xffac0003.toInt()
-    canvas.drawCircle(0f, 0f, mRadius, paint)
-
-    // out ring
+    // middle ring
     paint.style = Paint.Style.STROKE
-    paint.strokeWidth = mRadius * 0.06f
-    paint.color = 0xff000000.toInt()
-    val outRadius = mRadius * 0.97f
-    canvas.drawCircle(0f, 0f, outRadius, paint)*/
-
+    paint.strokeWidth = mRadius * 0.03f
+    paint.color = 0x55000000.toInt()
+    val middleRadius = mRadius * 0.6f
+    canvas.drawCircle(0f, 0f, middleRadius, paint)
 
     // 画万花筒
     paint.style = Paint.Style.FILL
@@ -93,9 +85,7 @@ class Itachi : Eye {
 //    canvas.drawPoints(floatArrayOf(pA.x, pA.y, pB.x, pB.y, pC1.x, pC1.y, pC2.x, pC2.y), paint)
 
     canvas.restore()
-
   }
-
 
   private fun rotatePoint(point: PointF, matrix: Matrix) {
     val array = floatArrayOf(point.x, point.y)

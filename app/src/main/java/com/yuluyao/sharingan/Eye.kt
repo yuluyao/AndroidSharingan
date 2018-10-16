@@ -11,8 +11,6 @@ open class Eye : View {
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
   protected val paint: Paint = Paint()
-
-
   protected val density = context.resources.displayMetrics.density
   /**
    * 最小尺寸
