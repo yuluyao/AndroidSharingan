@@ -95,11 +95,11 @@ class Sharingan : Eye {
     Log.i("vegeta", "animator start")
     val animGou = ObjectAnimator.ofFloat(this, "gouRadius", 0f).setDuration(1000)
     val animCenterDot = ObjectAnimator.ofFloat(this, "centerRadius", 0f).setDuration(1000)
-    val animatorSet = AnimatorSet()
-    animatorSet.playTogether(
+    val disappearSet = AnimatorSet()
+    disappearSet.playTogether(
       animGou,
       animCenterDot
     )
-    animatorSet.start()
+    disappearSet.start()
   }
 }
