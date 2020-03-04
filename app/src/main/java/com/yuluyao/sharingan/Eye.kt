@@ -9,17 +9,19 @@ import android.view.View
 import kotlin.math.min
 
 open class Eye : View {
+  companion object {
+    /**
+     * 最小尺寸
+     */
+    private var MIN_SIZE = 48 * Resources.getSystem().displayMetrics.density
+  }
+
   constructor(context: Context) : super(context)
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
   protected val paint: Paint = Paint()
-  protected val density = Resources.getSystem().displayMetrics.density
   /**
-   * 最小尺寸
-   */
-  protected var minSize = 48 * density
-  /**
-   * 眼睛的半径
+   * 眼睛的半径，外圆减去黑圈
    */
   protected var mRadius = 0f
   /**
@@ -30,7 +32,7 @@ open class Eye : View {
   init {
     paint.color = Color.BLACK
     paint.style = Paint.Style.STROKE
-    paint.strokeWidth = 3 * density
+    paint.strokeWidth = 3 * Resources.getSystem().displayMetrics.density
     paint.isAntiAlias = true
   }
 
@@ -45,15 +47,15 @@ open class Eye : View {
     val specSize = MeasureSpec.getSize(measureSpec)
     return when (specMode) {
       MeasureSpec.UNSPECIFIED -> {
-        minSize.toInt()
+        MIN_SIZE.toInt()
       }
       MeasureSpec.AT_MOST -> {
-        minSize.toInt()
+        MIN_SIZE.toInt()
       }
       MeasureSpec.EXACTLY -> {
         specSize
       }
-      else -> minSize.toInt()
+      else -> MIN_SIZE.toInt()
     }
   }
 
