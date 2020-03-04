@@ -1,15 +1,20 @@
 package com.yuluyao.sharingan
 
+import android.animation.Animator
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.view.animation.DecelerateInterpolator
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-
-class Itachi : Eye {
+/**
+ * 鼬神的写轮眼
+ */
+class Itachi : Sharingan {
   constructor(context: Context) : super(context)
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
@@ -17,7 +22,7 @@ class Itachi : Eye {
 
   init {
     rotateMatrix.setRotate(120f, 0f, 0f)
-    setOnClickListener { appearItachi() }
+    setOnClickListener { appearItachi().start() }
   }
 
 
@@ -53,7 +58,10 @@ class Itachi : Eye {
   }
 
   private fun drawItachi(canvas: Canvas) {
+    canvas.save()
+    canvas.rotate(30f)
     canvas.drawPath(obtainItachiPath(), paint)
+    canvas.restore()
   }
 
 
@@ -120,8 +128,17 @@ class Itachi : Eye {
     point.y = array[1]
   }
 
-  private fun appearItachi() {
-    ObjectAnimator.ofFloat(this, "itachiRadius", mRadius).setDuration(1000).start()
+  private fun appearItachi(): Animator {
+    val a = ObjectAnimator.ofFloat(this, "itachiRadius", mRadius)
+    a.duration = 500
+    a.interpolator = DecelerateInterpolator()
+
+    val appearItachiSet = AnimatorSet()
+    appearItachiSet.playTogether(a)
+
+    val finalSet = AnimatorSet()
+    finalSet.playSequentially(disappearSharingan(), appearItachiSet)
+    return finalSet
   }
 
 }

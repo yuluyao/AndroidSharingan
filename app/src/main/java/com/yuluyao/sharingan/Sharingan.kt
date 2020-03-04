@@ -1,21 +1,27 @@
 package com.yuluyao.sharingan
 
+import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.Log
+import android.view.animation.AccelerateInterpolator
 
-class Sharingan : Eye {
+/**
+ * 三勾玉写轮眼
+ */
+open class Sharingan : Eye {
   constructor(context: Context) : super(context)
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
+/*
   init {
     setOnClickListener {
-      disappearSharingan()
+      disappearSharingan().start()
     }
   }
+*/
 
   override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
     super.onSizeChanged(w, h, oldw, oldh)
@@ -91,15 +97,17 @@ class Sharingan : Eye {
     return gouPath
   }
 
-  protected fun disappearSharingan() {
-    Log.i("vegeta", "animator start")
-    val animGou = ObjectAnimator.ofFloat(this, "gouRadius", 0f).setDuration(1000)
-    val animCenterDot = ObjectAnimator.ofFloat(this, "centerRadius", 0f).setDuration(1000)
+  protected fun disappearSharingan(): Animator {
+    val animGou = ObjectAnimator.ofFloat(this, "gouRadius", 0f)
+    animGou.interpolator = AccelerateInterpolator()
+    val animCenterDot = ObjectAnimator.ofFloat(this, "centerRadius", 0f)
+    animCenterDot.interpolator = AccelerateInterpolator()
     val disappearSet = AnimatorSet()
     disappearSet.playTogether(
       animGou,
       animCenterDot
     )
-    disappearSet.start()
+    disappearSet.duration = 500
+    return disappearSet
   }
 }
