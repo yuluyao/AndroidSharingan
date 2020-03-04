@@ -1,5 +1,6 @@
 package com.yuluyao.sharingan
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
@@ -16,12 +17,13 @@ class Itachi : Eye {
 
   init {
     rotateMatrix.setRotate(120f, 0f, 0f)
+    setOnClickListener { appearItachi() }
   }
 
 
   override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
     super.onSizeChanged(w, h, oldw, oldh)
-    itachiRadius = mRadius
+//    itachiRadius = mRadius
     updatePoints()
   }
 
@@ -43,13 +45,6 @@ class Itachi : Eye {
     paint.color = Color.BLACK
     drawItachi(canvas)
 
-
-    // test points
-//    paint.style = Paint.Style.STROKE
-//    paint.strokeWidth = 2 * density
-//    paint.color = Color.GREEN
-//    canvas.drawPoints(floatArrayOf(pA.x, pA.y, pB.x, pB.y, pC1.x, pC1.y, pC2.x, pC2.y), paint)
-
     canvas.restore()
   }
 
@@ -66,6 +61,7 @@ class Itachi : Eye {
   var itachiRadius = 0F
     set(value) {
       field = value
+      updatePoints()
       invalidate()
     }
 
@@ -123,6 +119,10 @@ class Itachi : Eye {
     matrix.mapPoints(array)
     point.x = array[0]
     point.y = array[1]
+  }
+
+  private fun appearItachi() {
+    ObjectAnimator.ofFloat(this, "itachiRadius", mRadius).setDuration(1000).start()
   }
 
 }

@@ -86,7 +86,7 @@ class Sharingan : Eye {
   protected fun disappearGou() {
     Log.i("vegeta", "animator start")
     val objectAnimator = ObjectAnimator.ofFloat(this, "gouRadius", 0f)
-    objectAnimator.duration = 2000
+    objectAnimator.duration = 1000
     objectAnimator.start()
   }
 }
