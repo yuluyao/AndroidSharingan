@@ -1,5 +1,6 @@
 package com.yuluyao.sharingan
 
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.*
@@ -12,13 +13,14 @@ class Sharingan : Eye {
 
   init {
     setOnClickListener {
-      disappearGou()
+      disappearSharingan()
     }
   }
 
   override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
     super.onSizeChanged(w, h, oldw, oldh)
     gouRadius = mRadius * 0.125f
+    centerRadius = mRadius * 0.15f
   }
 
   override fun onDraw(canvas: Canvas) {
@@ -47,9 +49,15 @@ class Sharingan : Eye {
 
 
   private fun drawCenterDot(canvas: Canvas) {
-    val centerRadius = mRadius * 0.15f
     canvas.drawCircle(0f, 0f, centerRadius, paint)
   }
+
+  var centerRadius = 0F
+    set(value) {
+      field = value
+      invalidate()
+    }
+
 
   private fun drawMiddleRing(canvas: Canvas, middleRadius: Float) {
     canvas.drawCircle(0f, 0f, middleRadius, paint)
@@ -83,10 +91,15 @@ class Sharingan : Eye {
     return gouPath
   }
 
-  protected fun disappearGou() {
+  protected fun disappearSharingan() {
     Log.i("vegeta", "animator start")
-    val objectAnimator = ObjectAnimator.ofFloat(this, "gouRadius", 0f)
-    objectAnimator.duration = 1000
-    objectAnimator.start()
+    val animGou = ObjectAnimator.ofFloat(this, "gouRadius", 0f).setDuration(1000)
+    val animCenterDot = ObjectAnimator.ofFloat(this, "centerRadius", 0f).setDuration(1000)
+    val animatorSet = AnimatorSet()
+    animatorSet.playTogether(
+      animGou,
+      animCenterDot
+    )
+    animatorSet.start()
   }
 }
