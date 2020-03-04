@@ -1,17 +1,24 @@
 package com.yuluyao.sharingan
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.Log
 
 class Sharingan : Eye {
   constructor(context: Context) : super(context)
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
-  private val rotateMatrix = Matrix()
-
   init {
-    rotateMatrix.setRotate(120f, 0f, 0f)
+    setOnClickListener {
+      disappearGou()
+    }
+  }
+
+  override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+    super.onSizeChanged(w, h, oldw, oldh)
+    gouRadius = mRadius * 0.125f
   }
 
   override fun onDraw(canvas: Canvas) {
@@ -35,13 +42,12 @@ class Sharingan : Eye {
     // gou
     paint.color = Color.BLACK
     paint.style = Paint.Style.FILL
-    val gouRadius = mRadius * 0.125f
-    for (degree in -45 until 360 step 120) {
+    for (degree in 0 until 360 step 120) {
       canvas.save()
       canvas.rotate(degree.toFloat())
 
       // 画勾玉
-      canvas.drawPath(obtainGouPath(middleRadius), paint)
+      canvas.drawPath(buildGouPath(middleRadius), paint)
       canvas.restore()
     }
 
@@ -49,23 +55,28 @@ class Sharingan : Eye {
     canvas.restore()
   }
 
-  private val originalPath = Path()
-  private fun obtainGouPath(middleRadius: Float): Path {
-    if (originalPath.isEmpty) {
-      val gouRadius = mRadius * 0.125f
-      originalPath.addCircle(middleRadius, 0f, gouRadius, Path.Direction.CW)
-      val rectF = RectF(middleRadius - gouRadius * 2, 0 - gouRadius,
-        middleRadius + gouRadius * 2, 0 + gouRadius * 3)
-      originalPath.arcTo(rectF, -90f, 90f)
-      val rectF2 = RectF(middleRadius, 0f, middleRadius + gouRadius * 2, 0 + gouRadius * 2)
-      originalPath.arcTo(rectF2, 0f, -90f)
+
+  var gouRadius = 0F
+    set(value) {
+      field = value
+      invalidate()
     }
 
-//    val tmpPath=Path()
-//    originalPath.transform(rotateMatrix,tmpPath)
-//    originalPath
-
-    return originalPath
+  private val gouPath = Path()
+  private fun buildGouPath(middleRadius: Float): Path {
+    gouPath.reset()
+    gouPath.addCircle(middleRadius, 0f, gouRadius, Path.Direction.CW)
+    val rectF = RectF(middleRadius - gouRadius * 2, 0 - gouRadius, middleRadius + gouRadius * 2, 0 + gouRadius * 3)
+    gouPath.arcTo(rectF, -90f, 90f)
+    val rectF2 = RectF(middleRadius, 0f, middleRadius + gouRadius * 2, 0 + gouRadius * 2)
+    gouPath.arcTo(rectF2, 0f, -90f)
+    return gouPath
   }
 
+  protected fun disappearGou() {
+    Log.i("vegeta", "animator start")
+    val objectAnimator = ObjectAnimator.ofFloat(this, "gouRadius", 0f)
+    objectAnimator.duration = 2000
+    objectAnimator.start()
+  }
 }

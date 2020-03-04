@@ -9,12 +9,6 @@ import android.view.View
 import kotlin.math.min
 
 open class Eye : View {
-  companion object {
-    /**
-     * 最小尺寸
-     */
-    private var MIN_SIZE = 48 * Resources.getSystem().displayMetrics.density
-  }
 
   constructor(context: Context) : super(context)
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -44,17 +38,18 @@ open class Eye : View {
   private fun getViewSize(measureSpec: Int): Int {
     val specMode = MeasureSpec.getMode(measureSpec)
     val specSize = MeasureSpec.getSize(measureSpec)
+    val minSize = min(suggestedMinimumWidth, suggestedMinimumHeight)
     return when (specMode) {
       MeasureSpec.UNSPECIFIED -> {
-        MIN_SIZE.toInt()
+        specSize
       }
       MeasureSpec.AT_MOST -> {
-        MIN_SIZE.toInt()
+        minSize
       }
       MeasureSpec.EXACTLY -> {
         specSize
       }
-      else -> MIN_SIZE.toInt()
+      else -> 0
     }
   }
 
@@ -64,6 +59,7 @@ open class Eye : View {
   protected var mRadius = 0F
   // 圆心坐标
   protected var centerCoordinate = floatArrayOf(0f, 0f)
+
   override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
     mRadiusWithBorder = min(w.toFloat() - paddingLeft - paddingRight, h.toFloat() - paddingTop - paddingBottom) / 2
     mRadius = mRadiusWithBorder * 0.94f

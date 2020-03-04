@@ -10,14 +10,10 @@
 
     <com.yuluyao.sharingan.Eye
       android:id="@+id/eye"
+      android:minWidth="40dp"
+      android:minHeight="40dp"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      />
-
-    <com.yuluyao.sharingan.Sharingan
-      android:id="@+id/sharingan"
-      android:layout_width="120dp"
-      android:layout_height="120dp"
       />
 
     <com.yuluyao.sharingan.Itachi
@@ -28,19 +24,25 @@
 
     <FrameLayout
       android:layout_width="120dp"
-      android:background="#33ff00ff"
       android:layout_height="160dp"
+      android:background="#33ff00ff"
       >
 
         <com.yuluyao.sharingan.Sasuke
           android:id="@+id/sasuke"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
           android:layout_marginTop="8dp"
           android:paddingLeft="8dp"
           android:paddingRight="8dp"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
           />
 
     </FrameLayout>
+
+    <com.yuluyao.sharingan.Sharingan
+      android:id="@+id/sharingan"
+      android:layout_width="120dp"
+      android:layout_height="120dp"
+      />
 
 </LinearLayout>
