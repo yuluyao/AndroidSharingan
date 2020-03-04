@@ -27,12 +27,16 @@
       />
 
     <FrameLayout
-      android:layout_width="100dp"
-      android:layout_height="100dp"
+      android:layout_width="120dp"
+      android:background="#33ff00ff"
+      android:layout_height="160dp"
       >
 
         <com.yuluyao.sharingan.Sasuke
           android:id="@+id/sasuke"
+          android:layout_marginTop="8dp"
+          android:paddingLeft="8dp"
+          android:paddingRight="8dp"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           />

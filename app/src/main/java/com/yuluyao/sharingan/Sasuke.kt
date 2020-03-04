@@ -11,7 +11,7 @@ class Sasuke : Eye {
   override fun onDraw(canvas: Canvas) {
     super.onDraw(canvas)
     canvas.save()
-    canvas.translate(mWidth / 2, mHeight / 2)
+    canvas.translate(centerCoordinate[0], centerCoordinate[1])
 
     // 画6条弧线
     paint.color = Color.BLACK

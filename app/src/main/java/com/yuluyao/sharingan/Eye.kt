@@ -20,14 +20,6 @@ open class Eye : View {
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
   protected val paint: Paint = Paint()
-  /**
-   * 眼睛的半径，外圆减去黑圈
-   */
-  protected var mRadius = 0f
-  /**
-   * 外圆的半径
-   */
-  private var mRadiusOuter = 0f
 
   init {
     paint.color = Color.BLACK
@@ -37,8 +29,15 @@ open class Eye : View {
   }
 
   override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-    Log.v("Eye", "widthSize:${MeasureSpec.getSize(widthMeasureSpec)},heightSize:${MeasureSpec.getSize(heightMeasureSpec)}")
-    setMeasuredDimension(getViewSize(widthMeasureSpec), getViewSize(heightMeasureSpec))
+    // 当宽高不相等时，取较小值，保证测量后是一个正方形，宽高相等
+    val widthSize = MeasureSpec.getSize(widthMeasureSpec)
+    val heightSize = MeasureSpec.getSize(heightMeasureSpec)
+    Log.v("Eye", "widthSize:$widthSize,heightSize:$heightSize");
+    if (widthSize <= heightSize) {
+      setMeasuredDimension(getViewSize(widthMeasureSpec), getViewSize(widthMeasureSpec))
+    } else {
+      setMeasuredDimension(getViewSize(heightMeasureSpec), getViewSize(heightMeasureSpec))
+    }
   }
 
 
@@ -59,25 +58,28 @@ open class Eye : View {
     }
   }
 
-
-  protected var mWidth: Float = 0f
-  protected var mHeight: Float = 0f
+  // 眼睛整个半径，包含外部黑色圆圈
+  protected var mRadiusWithBorder = 0F
+  // 眼睛半径，不包含外部黑色圆圈
+  protected var mRadius = 0F
+  // 圆心坐标
+  protected var centerCoordinate = floatArrayOf(0f, 0f)
   override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-    mWidth = w.toFloat()
-    mHeight = h.toFloat()
-    mRadiusOuter = min(mWidth, mHeight) / 2
-    mRadius = mRadiusOuter * 0.94f
+    mRadiusWithBorder = min(w.toFloat() - paddingLeft - paddingRight, h.toFloat() - paddingTop - paddingBottom) / 2
+    mRadius = mRadiusWithBorder * 0.94f
+    centerCoordinate[0] = (w.toFloat() + paddingLeft - paddingRight) / 2
+    centerCoordinate[1] = (h.toFloat() + paddingTop - paddingBottom) / 2
   }
 
   private val ring = Path()
   override fun onDraw(canvas: Canvas) {
     canvas.save()
-    canvas.translate(mWidth / 2, mHeight / 2)
+    canvas.translate(centerCoordinate[0], centerCoordinate[1])
 
     // out ring
     paint.style = Paint.Style.FILL
     paint.color = Color.BLACK
-    ring.addCircle(0f, 0f, mRadiusOuter, Path.Direction.CW)
+    ring.addCircle(0f, 0f, mRadiusWithBorder, Path.Direction.CW)
     ring.addCircle(0f, 0f, mRadius, Path.Direction.CCW)
     ring.fillType = Path.FillType.WINDING
     canvas.drawPath(ring, paint)
