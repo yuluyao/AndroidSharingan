@@ -28,33 +28,43 @@ class Sharingan : Eye {
 
     // center dot
     paint.color = Color.BLACK
-    val centerRadius = mRadius * 0.15f
-    canvas.drawCircle(0f, 0f, centerRadius, paint)
+    drawCenterDot(canvas)
 
     // middle ring
     paint.style = Paint.Style.STROKE
     paint.strokeWidth = mRadius * 0.03f
     paint.color = 0x55000000.toInt()
-    val middleRadius = mRadius * 0.6f
-    canvas.drawCircle(0f, 0f, middleRadius, paint)
-
+    val middleRingRadius = mRadius * 0.6f
+    drawMiddleRing(canvas, middleRingRadius)
 
     // gou
     paint.color = Color.BLACK
     paint.style = Paint.Style.FILL
+    drawGou(canvas, middleRingRadius)
+
+    canvas.restore()
+  }
+
+
+  private fun drawCenterDot(canvas: Canvas) {
+    val centerRadius = mRadius * 0.15f
+    canvas.drawCircle(0f, 0f, centerRadius, paint)
+  }
+
+  private fun drawMiddleRing(canvas: Canvas, middleRadius: Float) {
+    canvas.drawCircle(0f, 0f, middleRadius, paint)
+  }
+
+  private fun drawGou(canvas: Canvas, middleRingRadius: Float) {
     for (degree in 0 until 360 step 120) {
       canvas.save()
       canvas.rotate(degree.toFloat())
 
       // 画勾玉
-      canvas.drawPath(buildGouPath(middleRadius), paint)
+      canvas.drawPath(buildGouPath(middleRingRadius), paint)
       canvas.restore()
     }
-
-
-    canvas.restore()
   }
-
 
   var gouRadius = 0F
     set(value) {
@@ -63,12 +73,12 @@ class Sharingan : Eye {
     }
 
   private val gouPath = Path()
-  private fun buildGouPath(middleRadius: Float): Path {
+  private fun buildGouPath(middleRingRadius: Float): Path {
     gouPath.reset()
-    gouPath.addCircle(middleRadius, 0f, gouRadius, Path.Direction.CW)
-    val rectF = RectF(middleRadius - gouRadius * 2, 0 - gouRadius, middleRadius + gouRadius * 2, 0 + gouRadius * 3)
+    gouPath.addCircle(middleRingRadius, 0f, gouRadius, Path.Direction.CW)
+    val rectF = RectF(middleRingRadius - gouRadius * 2, 0 - gouRadius, middleRingRadius + gouRadius * 2, 0 + gouRadius * 3)
     gouPath.arcTo(rectF, -90f, 90f)
-    val rectF2 = RectF(middleRadius, 0f, middleRadius + gouRadius * 2, 0 + gouRadius * 2)
+    val rectF2 = RectF(middleRingRadius, 0f, middleRingRadius + gouRadius * 2, 0 + gouRadius * 2)
     gouPath.arcTo(rectF2, 0f, -90f)
     return gouPath
   }
