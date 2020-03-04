@@ -1,17 +1,19 @@
 package com.yuluyao.sharingan
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
+import kotlin.math.min
 
 open class Eye : View {
   constructor(context: Context) : super(context)
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
   protected val paint: Paint = Paint()
-  protected val density = context.resources.displayMetrics.density
+  protected val density = Resources.getSystem().displayMetrics.density
   /**
    * 最小尺寸
    */
@@ -33,8 +35,7 @@ open class Eye : View {
   }
 
   override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-    Log.v("Eye", "widthSize:${MeasureSpec.getSize(widthMeasureSpec)}," +
-        "heightSize:${MeasureSpec.getSize(heightMeasureSpec)}")
+    Log.v("Eye", "widthSize:${MeasureSpec.getSize(widthMeasureSpec)},heightSize:${MeasureSpec.getSize(heightMeasureSpec)}")
     setMeasuredDimension(getViewSize(widthMeasureSpec), getViewSize(heightMeasureSpec))
   }
 
@@ -62,14 +63,12 @@ open class Eye : View {
   override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
     mWidth = w.toFloat()
     mHeight = h.toFloat()
-    mRadiusOuter = Math.min(mWidth, mHeight) / 2
+    mRadiusOuter = min(mWidth, mHeight) / 2
     mRadius = mRadiusOuter * 0.94f
   }
 
   private val ring = Path()
-  override fun onDraw(canvas: Canvas?) {
-    super.onDraw(canvas)
-    canvas ?: return
+  override fun onDraw(canvas: Canvas) {
     canvas.save()
     canvas.translate(mWidth / 2, mHeight / 2)
 

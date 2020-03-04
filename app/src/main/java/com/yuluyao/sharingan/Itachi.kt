@@ -48,9 +48,8 @@ class Itachi : Eye {
     pC2.y = array[1]
   }
 
-  override fun onDraw(canvas: Canvas?) {
+  override fun onDraw(canvas: Canvas) {
     super.onDraw(canvas)
-    canvas ?: return
     canvas.save()
     canvas.translate(mWidth / 2, mHeight / 2)
 
