@@ -42,7 +42,7 @@ class Itachi : Sharingan {
     paint.strokeWidth = mRadius * 0.03f
     paint.color = 0x55000000.toInt()
     val middleRingRadius = mRadius * 0.6f
-    drawMiddleRing(canvas, middleRingRadius)
+//    drawMiddleRing(canvas, middleRingRadius)
 
     // itachi
     paint.style = Paint.Style.FILL

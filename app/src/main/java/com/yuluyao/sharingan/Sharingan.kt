@@ -1,8 +1,6 @@
 package com.yuluyao.sharingan
 
-import android.animation.Animator
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
+import android.animation.*
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
@@ -41,7 +39,7 @@ open class Sharingan : Eye {
     // middle ring
     paint.style = Paint.Style.STROKE
     paint.strokeWidth = mRadius * 0.03f
-    paint.color = 0x55000000.toInt()
+    paint.color = middleRingColor
     val middleRingRadius = mRadius * 0.6f
     drawMiddleRing(canvas, middleRingRadius)
 
@@ -68,6 +66,12 @@ open class Sharingan : Eye {
   private fun drawMiddleRing(canvas: Canvas, middleRadius: Float) {
     canvas.drawCircle(0f, 0f, middleRadius, paint)
   }
+
+  var middleRingColor = 0x55000000
+    set(value) {
+      field = value
+      invalidate()
+    }
 
   private fun drawGou(canvas: Canvas, middleRingRadius: Float) {
     for (degree in 0 until 360 step 120) {
@@ -102,10 +106,14 @@ open class Sharingan : Eye {
     animGou.interpolator = AccelerateInterpolator()
     val animCenterDot = ObjectAnimator.ofFloat(this, "centerRadius", 0f)
     animCenterDot.interpolator = AccelerateInterpolator()
+    val animMiddleRing = ObjectAnimator.ofInt(this, "middleRingColor", 0x00000000)
+    animMiddleRing.setEvaluator(ArgbEvaluator())
+    animMiddleRing.interpolator = AccelerateInterpolator()
     val disappearSet = AnimatorSet()
     disappearSet.playTogether(
       animGou,
-      animCenterDot
+      animCenterDot,
+      animMiddleRing
     )
     disappearSet.duration = 500
     return disappearSet
