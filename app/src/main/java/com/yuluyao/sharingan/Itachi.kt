@@ -37,24 +37,12 @@ class Itachi : Sharingan {
     canvas.save()
     canvas.translate(centerCoordinate[0], centerCoordinate[1])
 
-    // middle ring
-    paint.style = Paint.Style.STROKE
-    paint.strokeWidth = mRadius * 0.03f
-    paint.color = 0x55000000.toInt()
-    val middleRingRadius = mRadius * 0.6f
-//    drawMiddleRing(canvas, middleRingRadius)
-
     // itachi
     paint.style = Paint.Style.FILL
     paint.color = Color.BLACK
     drawItachi(canvas)
 
     canvas.restore()
-  }
-
-
-  private fun drawMiddleRing(canvas: Canvas, middleRadius: Float) {
-    canvas.drawCircle(0f, 0f, middleRadius, paint)
   }
 
   private fun drawItachi(canvas: Canvas) {

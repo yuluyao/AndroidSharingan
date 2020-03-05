@@ -8,6 +8,10 @@ import android.util.Log
 import android.view.View
 import kotlin.math.min
 
+/**
+ * 眼睛
+ * 测量，支持padding，计算半径，画背景
+ */
 open class Eye : View {
 
   constructor(context: Context) : super(context)
