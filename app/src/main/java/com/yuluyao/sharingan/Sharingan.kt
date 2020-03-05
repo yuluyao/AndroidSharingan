@@ -106,7 +106,7 @@ open class Sharingan : Eye {
     animGou.interpolator = AccelerateInterpolator()
     val animCenterDot = ObjectAnimator.ofFloat(this, "centerRadius", 0f)
     animCenterDot.interpolator = AccelerateInterpolator()
-    val animMiddleRing = ObjectAnimator.ofInt(this, "middleRingColor", 0x00000000)
+    val animMiddleRing = ObjectAnimator.ofInt(this, "middleRingColor", Color.TRANSPARENT)
     animMiddleRing.setEvaluator(ArgbEvaluator())
     animMiddleRing.interpolator = AccelerateInterpolator()
     val disappearSet = AnimatorSet()
@@ -117,5 +117,12 @@ open class Sharingan : Eye {
     )
     disappearSet.duration = 500
     return disappearSet
+  }
+
+  protected open fun reset() {
+    gouRadius = mRadius * 0.125f
+    centerRadius = mRadius * 0.15f
+    middleRingColor = 0x55000000
+    invalidate()
   }
 }

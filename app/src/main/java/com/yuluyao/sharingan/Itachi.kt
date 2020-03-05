@@ -18,11 +18,20 @@ class Itachi : Sharingan {
   constructor(context: Context) : super(context)
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
+  private var kai = false
+
   private val rotateMatrix = Matrix()
 
   init {
     rotateMatrix.setRotate(120f, 0f, 0f)
-    setOnClickListener { appearItachi().start() }
+    setOnClickListener {
+      if (kai) {
+        reset()
+      } else {
+        appearItachi().start()
+      }
+      kai = !kai
+    }
   }
 
   override fun onDraw(canvas: Canvas) {
@@ -120,6 +129,13 @@ class Itachi : Sharingan {
     val finalSet = AnimatorSet()
     finalSet.playSequentially(disappearSharingan(), appearItachiSet)
     return finalSet
+  }
+
+  override fun reset() {
+    super.reset()
+    itachiRadius = 0f
+    updatePoints()
+    invalidate()
   }
 
 }

@@ -14,11 +14,19 @@ class Sasuke : Sharingan {
   constructor(context: Context) : super(context)
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
+  private var kai = false
   private val rotateMatrix = Matrix()
 
   init {
     rotateMatrix.setRotate(60f)
-    setOnClickListener { appearSasuke().start() }
+    setOnClickListener {
+      if (kai) {
+        reset()
+      } else {
+        appearSasuke().start()
+      }
+      kai = !kai
+    }
   }
 
   override fun onDraw(canvas: Canvas) {
@@ -118,6 +126,14 @@ class Sasuke : Sharingan {
     val finalSet = AnimatorSet()
     finalSet.playSequentially(disappearSharingan(), appearSasukeSet)
     return finalSet
+  }
+
+  override fun reset() {
+    super.reset()
+    sasukeRadius = 0f
+    primaryColor = Color.TRANSPARENT
+    updateOuterRectF()
+    invalidate()
   }
 
 
