@@ -4,16 +4,23 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:orientation="vertical"
+  android:gravity="center_horizontal"
   tools:context=".MainActivity"
   >
 
 
-    <com.yuluyao.sharingan.Eye
-      android:id="@+id/eye"
+<!--    <com.yuluyao.sharingan.Eye-->
+<!--      android:id="@+id/eye"-->
+<!--      android:layout_width="wrap_content"-->
+<!--      android:layout_height="wrap_content"-->
+<!--      android:minWidth="64dp"-->
+<!--      android:minHeight="64dp"-->
+<!--      />-->
+    <TextView
       android:layout_width="wrap_content"
+      android:layout_marginTop="16dp"
       android:layout_height="wrap_content"
-      android:minWidth="64dp"
-      android:minHeight="64dp"
+      android:text="写轮眼"
       />
 
     <com.yuluyao.sharingan.Sharingan
@@ -21,15 +28,39 @@
       android:layout_width="120dp"
       android:layout_height="120dp"
       />
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="16dp"
+      android:text="佐助1"
+      />
 
     <com.yuluyao.sharingan.Sasuke
       android:id="@+id/sasuke"
       android:layout_width="120dp"
       android:layout_height="120dp"
       />
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_marginTop="16dp"
+      android:layout_height="wrap_content"
+      android:text="鼬"
+      />
 
     <com.yuluyao.sharingan.Itachi
       android:id="@+id/itachi"
+      android:layout_width="120dp"
+      android:layout_height="120dp"
+      />
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="16dp"
+      android:text="佐助2"
+      />
+
+    <com.yuluyao.sharingan.Sa
+      android:id="@+id/sa"
       android:layout_width="120dp"
       android:layout_height="120dp"
       />

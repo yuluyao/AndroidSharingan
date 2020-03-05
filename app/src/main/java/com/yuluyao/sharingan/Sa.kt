@@ -7,18 +7,20 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import android.view.animation.DecelerateInterpolator
+import kotlin.math.PI
 import kotlin.math.sqrt
+import kotlin.math.tan
 
-class Sasuke : Sharingan {
+class Sa : Sharingan {
   constructor(context: Context) : super(context)
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
+  private val matrix0 = Matrix()
+  private val matrix1 = Matrix()
   private var kai = false
-  private val rotateMatrix = Matrix()
 
   init {
-    rotateMatrix.setRotate(60f)
+    matrix1.setRotate(60f)
     setOnClickListener {
       if (kai) {
         reset()
@@ -36,55 +38,74 @@ class Sasuke : Sharingan {
 
     // 画6条弧线
     paint.color = Color.BLACK
-    paint.strokeWidth = mRadius * 0.03f
     paint.style = Paint.Style.STROKE
-    val arc6Path = obtainSasukePath()
-    canvas.drawPath(arc6Path, paint)
+    paint.strokeWidth = mRadius * 0.03f
+    drawArc(canvas)
 
     // 画黑色区域与圆点
     paint.color = primaryColor
     paint.style = Paint.Style.FILL
-    val blackPath = obtainBlack(arc6Path)
+    val blackPath = obtainBlack(arcPath)
     canvas.drawPath(blackPath, paint)
 
     canvas.restore()
   }
 
+  private fun drawArc(canvas: Canvas) {
+    arcPath.reset()
+    onePiece.reset()
+    if (arcRatio == 0f) {
+      return
+    }
+    canvas.save()
+    canvas.translate(0f, -mRadius)
+    canvas.rotate(45f)
+    onePiece.moveTo(a.x, a.y)
+    onePiece.cubicTo(c1.x, c1.y, c2.x, c2.y, b.x, b.y)
+    canvas.restore()
+    onePiece.transform(matrix0)
 
-  private var outerRadius = 0F
-  private val outerRectF = RectF()
-
-  private fun updateOuterRectF() {
-    outerRadius = sqrt(2.0f) * sasukeRadius
-    outerRectF.set(-outerRadius, sasukeRadius - outerRadius, outerRadius, sasukeRadius + outerRadius)
+    for (i in 1..6) {
+      arcPath.addPath(onePiece)
+      onePiece.transform(matrix1)
+    }
+    canvas.drawPath(arcPath, paint)
   }
 
-  var sasukeRadius = 0F
+  private val arcPath = Path()
+  private val onePiece = Path()
+
+
+  private val a = PointF()
+  private val b = PointF()
+  private val c1 = PointF()
+  private val c2 = PointF()
+
+  private var outerRadius = 0F
+  var arcRatio = 0f
     set(value) {
       field = value
-      updateOuterRectF()
+      updatePoints()
       invalidate()
     }
 
-  private val sasukePath = Path()
+  private fun updatePoints() {
+    outerRadius = mRadius * sqrt(2.0f)
 
-  // 万花筒的6条弧线，其中1条
-  private val arcPath = Path()
+    matrix0.setTranslate(-outerRadius / 2f, outerRadius / 2f)
 
-  private fun obtainSasukePath(): Path {
-    sasukePath.reset()
-    arcPath.reset()
+    a.x = outerRadius
+    a.y = 0f
+    b.x = 0f
+    b.y = -outerRadius
 
-    arcPath.moveTo(-sasukeRadius, 0f)
-    arcPath.arcTo(outerRectF, -135f, 90f)
+    c1.x = outerRadius
+    c1.y = -(4.0 * tan(PI / 8.0) / 3.0).toFloat() * outerRadius * arcRatio
+    c2.x = (4.0 * tan(PI / 8.0) / 3.0).toFloat() * outerRadius * arcRatio
+    c2.y = -outerRadius
 
-    var i = 0
-    while (i++ < 6) {
-      arcPath.transform(rotateMatrix)
-      sasukePath.addPath(arcPath)
-    }
-    return sasukePath
   }
+
 
   var primaryColor = Color.TRANSPARENT
     set(value) {
@@ -103,7 +124,7 @@ class Sasuke : Sharingan {
     // 外圆,用来计算黑色区域
     circle.addCircle(0f, 0f, mRadius, Path.Direction.CCW)
     // 中心的圆点
-    dot.addCircle(0f, 0f, sasukeRadius * 0.15f, Path.Direction.CCW)
+    dot.addCircle(0f, 0f, mRadius * 0.15f * arcRatio, Path.Direction.CCW)
 
     blackArea.op(dst, circle, Path.Op.XOR)
     blackArea.op(dot, Path.Op.XOR)
@@ -112,7 +133,7 @@ class Sasuke : Sharingan {
 
 
   private fun appearSasuke(): Animator {
-    val a = ObjectAnimator.ofFloat(this, "sasukeRadius", mRadius)
+    val a = ObjectAnimator.ofFloat(this, "arcRatio", 1f)
     a.duration = 500
 
     val b = ObjectAnimator.ofInt(this, "primaryColor", Color.BLACK)
@@ -129,11 +150,10 @@ class Sasuke : Sharingan {
 
   override fun reset() {
     super.reset()
-    sasukeRadius = 0f
+    arcRatio = 0f
     primaryColor = Color.TRANSPARENT
-    updateOuterRectF()
+    updatePoints()
     invalidate()
   }
-
 
 }
