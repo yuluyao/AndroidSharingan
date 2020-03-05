@@ -25,13 +25,6 @@ class Itachi : Sharingan {
     setOnClickListener { appearItachi().start() }
   }
 
-
-  override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-    super.onSizeChanged(w, h, oldw, oldh)
-    updatePoints()
-  }
-
-
   override fun onDraw(canvas: Canvas) {
     super.onDraw(canvas)
     canvas.save()
