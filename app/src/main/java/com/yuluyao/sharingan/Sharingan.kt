@@ -126,6 +126,6 @@ open class Sharingan : Eye {
     gouRadius = mRadius * 0.125f
     centerRadius = mRadius * 0.15f
     middleRingColor = 0x55000000
-    invalidate()
+//    invalidate()
   }
 }

@@ -14,12 +14,15 @@ import kotlin.math.tan
 class Sasuke2 : Sharingan {
   constructor(context: Context) : super(context)
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-    matrix1.setRotate(60f)
+    rotateMatrix.setRotate(60f)
     animateOnClick()
   }
 
-  private val matrix0 = Matrix()
-  private val matrix1 = Matrix()
+
+  override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+    super.onSizeChanged(w, h, oldw, oldh)
+    arcRadius = mRadius * sqrt(2.0f)
+  }
 
   override fun onDraw(canvas: Canvas) {
     super.onDraw(canvas)
@@ -45,7 +48,8 @@ class Sasuke2 : Sharingan {
   private fun drawComplexBezier(canvas: Canvas) {
     complexBezierPath.reset()
     bezierPath.reset()
-    if (arcRatio == 0f) {
+    // ratio太小则不绘制交叉曲线
+    if (bezierRatio < 0.05f) {
       return
     }
     canvas.save()
@@ -54,21 +58,24 @@ class Sasuke2 : Sharingan {
     bezierPath.moveTo(a.x, a.y)
     bezierPath.cubicTo(c1.x, c1.y, c2.x, c2.y, b.x, b.y)
     canvas.restore()
-    bezierPath.transform(matrix0)
+    bezierPath.transform(translateBezierMatrix)
 
     for (i in 1..6) {
       complexBezierPath.addPath(bezierPath)
-      bezierPath.transform(matrix1)
+      bezierPath.transform(rotateMatrix)
     }
     canvas.drawPath(complexBezierPath, paint)
   }
 
-  var arcRatio = 0f
+  var bezierRatio = 0f
     set(value) {
       field = value
       updatePoints()
       invalidate()
     }
+
+  private val rotateMatrix = Matrix() // 旋转60度
+
 
   private val complexBezierPath = Path()
   private val bezierPath = Path()
@@ -80,10 +87,11 @@ class Sasuke2 : Sharingan {
   private val c1 = PointF()
   private val c2 = PointF()
 
-  private fun updatePoints() {
-    arcRadius = mRadius * sqrt(2.0f)
+  private val translateBezierMatrix = Matrix() // 将构造好的bezier曲线平移到以原点为中心
 
-    matrix0.setTranslate(-arcRadius / 2f, arcRadius / 2f)
+  private fun updatePoints() {
+
+    translateBezierMatrix.setTranslate(-arcRadius / 2f, arcRadius / 2f)
 
     a.x = arcRadius
     a.y = 0f
@@ -91,8 +99,8 @@ class Sasuke2 : Sharingan {
     b.y = -arcRadius
 
     c1.x = arcRadius
-    c1.y = -(4.0 * tan(PI / 8.0) / 3.0).toFloat() * arcRadius * arcRatio
-    c2.x = (4.0 * tan(PI / 8.0) / 3.0).toFloat() * arcRadius * arcRatio
+    c1.y = -(4.0 * tan(PI / 8.0) / 3.0).toFloat() * arcRadius * bezierRatio
+    c2.x = (4.0 * tan(PI / 8.0) / 3.0).toFloat() * arcRadius * bezierRatio
     c2.y = -arcRadius
 
   }
@@ -117,7 +125,7 @@ class Sasuke2 : Sharingan {
     // 外圆,用来计算黑色区域
     circle.addCircle(0f, 0f, mRadius, Path.Direction.CCW)
     // 中心的圆点
-    dot.addCircle(0f, 0f, mRadius * 0.15f * arcRatio, Path.Direction.CCW)
+    dot.addCircle(0f, 0f, mRadius * 0.15f * bezierRatio, Path.Direction.CCW)
 
     blackPath.op(dst, circle, Path.Op.XOR)
     blackPath.op(dot, Path.Op.XOR)
@@ -140,7 +148,7 @@ class Sasuke2 : Sharingan {
   }
 
   private fun appearSasuke(): Animator {
-    val a = ObjectAnimator.ofFloat(this, "arcRatio", 1f)
+    val a = ObjectAnimator.ofFloat(this, "bezierRatio", 1f)
     a.duration = 500
 
     val b = ObjectAnimator.ofInt(this, "primaryColor", Color.BLACK)
@@ -157,7 +165,7 @@ class Sasuke2 : Sharingan {
 
   override fun reset() {
     super.reset()
-    arcRatio = 0f
+    bezierRatio = 0f
     primaryColor = Color.TRANSPARENT
     updatePoints()
     invalidate()
