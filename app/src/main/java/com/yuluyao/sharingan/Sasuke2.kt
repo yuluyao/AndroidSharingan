@@ -13,23 +13,13 @@ import kotlin.math.tan
 
 class Sasuke2 : Sharingan {
   constructor(context: Context) : super(context)
-  constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+  constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+    matrix1.setRotate(60f)
+    animateOnClick()
+  }
 
   private val matrix0 = Matrix()
   private val matrix1 = Matrix()
-  private var kai = false
-
-  init {
-    matrix1.setRotate(60f)
-    setOnClickListener {
-      if (kai) {
-        reset()
-      } else {
-        appearSasuke().start()
-      }
-      kai = !kai
-    }
-  }
 
   override fun onDraw(canvas: Canvas) {
     super.onDraw(canvas)
@@ -40,48 +30,39 @@ class Sasuke2 : Sharingan {
     paint.color = Color.BLACK
     paint.style = Paint.Style.STROKE
     paint.strokeWidth = mRadius * 0.03f
-    drawArc(canvas)
+    drawComplexBezier(canvas)
 
     // 画黑色区域与圆点
     paint.color = primaryColor
     paint.style = Paint.Style.FILL
-    val blackPath = obtainBlack(arcPath)
+    val blackPath = obtainBlackPath(complexBezierPath)
     canvas.drawPath(blackPath, paint)
 
     canvas.restore()
   }
 
-  private fun drawArc(canvas: Canvas) {
-    arcPath.reset()
-    onePiece.reset()
+  //<editor-fold desc="交叉贝塞尔曲线">
+  private fun drawComplexBezier(canvas: Canvas) {
+    complexBezierPath.reset()
+    bezierPath.reset()
     if (arcRatio == 0f) {
       return
     }
     canvas.save()
     canvas.translate(0f, -mRadius)
     canvas.rotate(45f)
-    onePiece.moveTo(a.x, a.y)
-    onePiece.cubicTo(c1.x, c1.y, c2.x, c2.y, b.x, b.y)
+    bezierPath.moveTo(a.x, a.y)
+    bezierPath.cubicTo(c1.x, c1.y, c2.x, c2.y, b.x, b.y)
     canvas.restore()
-    onePiece.transform(matrix0)
+    bezierPath.transform(matrix0)
 
     for (i in 1..6) {
-      arcPath.addPath(onePiece)
-      onePiece.transform(matrix1)
+      complexBezierPath.addPath(bezierPath)
+      bezierPath.transform(matrix1)
     }
-    canvas.drawPath(arcPath, paint)
+    canvas.drawPath(complexBezierPath, paint)
   }
 
-  private val arcPath = Path()
-  private val onePiece = Path()
-
-
-  private val a = PointF()
-  private val b = PointF()
-  private val c1 = PointF()
-  private val c2 = PointF()
-
-  private var outerRadius = 0F
   var arcRatio = 0f
     set(value) {
       field = value
@@ -89,35 +70,47 @@ class Sasuke2 : Sharingan {
       invalidate()
     }
 
+  private val complexBezierPath = Path()
+  private val bezierPath = Path()
+
+  private var arcRadius = 0F // 被模拟的圆弧的半径
+
+  private val a = PointF()
+  private val b = PointF()
+  private val c1 = PointF()
+  private val c2 = PointF()
+
   private fun updatePoints() {
-    outerRadius = mRadius * sqrt(2.0f)
+    arcRadius = mRadius * sqrt(2.0f)
 
-    matrix0.setTranslate(-outerRadius / 2f, outerRadius / 2f)
+    matrix0.setTranslate(-arcRadius / 2f, arcRadius / 2f)
 
-    a.x = outerRadius
+    a.x = arcRadius
     a.y = 0f
     b.x = 0f
-    b.y = -outerRadius
+    b.y = -arcRadius
 
-    c1.x = outerRadius
-    c1.y = -(4.0 * tan(PI / 8.0) / 3.0).toFloat() * outerRadius * arcRatio
-    c2.x = (4.0 * tan(PI / 8.0) / 3.0).toFloat() * outerRadius * arcRatio
-    c2.y = -outerRadius
+    c1.x = arcRadius
+    c1.y = -(4.0 * tan(PI / 8.0) / 3.0).toFloat() * arcRadius * arcRatio
+    c2.x = (4.0 * tan(PI / 8.0) / 3.0).toFloat() * arcRadius * arcRatio
+    c2.y = -arcRadius
 
   }
+  //</editor-fold>
 
 
+  //<editor-fold desc="黑色区域和黑色中心">
   var primaryColor = Color.TRANSPARENT
     set(value) {
       field = value
       invalidate()
     }
 
-  private val blackArea = Path()
+  private val blackPath = Path()
   private val circle = Path()
   private val dot = Path()
-  private fun obtainBlack(dst: Path): Path {
-    blackArea.reset()
+  private fun obtainBlackPath(dst: Path): Path {
+    blackPath.reset()
     circle.reset()
     dot.reset()
 
@@ -126,11 +119,25 @@ class Sasuke2 : Sharingan {
     // 中心的圆点
     dot.addCircle(0f, 0f, mRadius * 0.15f * arcRatio, Path.Direction.CCW)
 
-    blackArea.op(dst, circle, Path.Op.XOR)
-    blackArea.op(dot, Path.Op.XOR)
-    return blackArea
+    blackPath.op(dst, circle, Path.Op.XOR)
+    blackPath.op(dot, Path.Op.XOR)
+    return blackPath
   }
+  //</editor-fold>
 
+
+  //<editor-fold desc="动画">
+  private var kai = false
+  private fun animateOnClick() {
+    setOnClickListener {
+      if (kai) {
+        reset()
+      } else {
+        appearSasuke().start()
+      }
+      kai = !kai
+    }
+  }
 
   private fun appearSasuke(): Animator {
     val a = ObjectAnimator.ofFloat(this, "arcRatio", 1f)
@@ -155,5 +162,6 @@ class Sasuke2 : Sharingan {
     updatePoints()
     invalidate()
   }
+  //</editor-fold>
 
 }
