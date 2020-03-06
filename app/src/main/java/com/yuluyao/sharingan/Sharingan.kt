@@ -52,6 +52,7 @@ open class Sharingan : Eye {
   }
 
 
+  //<editor-fold desc="中心黑点">
   private fun drawCenterDot(canvas: Canvas) {
     canvas.drawCircle(0f, 0f, centerRadius, paint)
   }
@@ -61,8 +62,10 @@ open class Sharingan : Eye {
       field = value
       invalidate()
     }
+  //</editor-fold>
 
 
+  //<editor-fold desc="中间圆圈">
   private fun drawMiddleRing(canvas: Canvas, middleRadius: Float) {
     canvas.drawCircle(0f, 0f, middleRadius, paint)
   }
@@ -72,7 +75,9 @@ open class Sharingan : Eye {
       field = value
       invalidate()
     }
+  //</editor-fold>
 
+  //<editor-fold desc="三勾玉">
   private fun drawGou(canvas: Canvas, middleRingRadius: Float) {
     for (degree in 0 until 360 step 120) {
       canvas.save()
@@ -100,21 +105,19 @@ open class Sharingan : Eye {
     gouPath.arcTo(rectF2, 0f, -90f)
     return gouPath
   }
+  //</editor-fold>
 
   protected fun disappearSharingan(): Animator {
-    val animGou = ObjectAnimator.ofFloat(this, "gouRadius", 0f)
-    animGou.interpolator = AccelerateInterpolator()
-    val animCenterDot = ObjectAnimator.ofFloat(this, "centerRadius", 0f)
-    animCenterDot.interpolator = AccelerateInterpolator()
-    val animMiddleRing = ObjectAnimator.ofInt(this, "middleRingColor", Color.TRANSPARENT)
-    animMiddleRing.setEvaluator(ArgbEvaluator())
-    animMiddleRing.interpolator = AccelerateInterpolator()
+    val a = ObjectAnimator.ofFloat(this, "gouRadius", 0f)
+    a.interpolator = AccelerateInterpolator()
+    val b = ObjectAnimator.ofFloat(this, "centerRadius", 0f)
+    b.interpolator = AccelerateInterpolator()
+    val c = ObjectAnimator.ofInt(this, "middleRingColor", Color.TRANSPARENT)
+    c.setEvaluator(ArgbEvaluator())
+    c.interpolator = AccelerateInterpolator()
+
     val disappearSet = AnimatorSet()
-    disappearSet.playTogether(
-      animGou,
-      animCenterDot,
-      animMiddleRing
-    )
+    disappearSet.playTogether(a, b, c)
     disappearSet.duration = 500
     return disappearSet
   }

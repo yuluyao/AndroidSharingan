@@ -59,7 +59,7 @@
       android:text="佐助2"
       />
 
-    <com.yuluyao.sharingan.Sa
+    <com.yuluyao.sharingan.Sasuke2
       android:id="@+id/sa"
       android:layout_width="120dp"
       android:layout_height="120dp"

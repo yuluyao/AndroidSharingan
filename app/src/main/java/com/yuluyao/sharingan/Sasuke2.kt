@@ -11,7 +11,7 @@ import kotlin.math.PI
 import kotlin.math.sqrt
 import kotlin.math.tan
 
-class Sa : Sharingan {
+class Sasuke2 : Sharingan {
   constructor(context: Context) : super(context)
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 

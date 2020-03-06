@@ -16,23 +16,16 @@ import kotlin.math.sqrt
  */
 class Itachi : Sharingan {
   constructor(context: Context) : super(context)
-  constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+  constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+    rotateMatrix.setRotate(120f, 0f, 0f)
+    animateOnClick()
+  }
+
+  init {
+  }
 
   private var kai = false
 
-  private val rotateMatrix = Matrix()
-
-  init {
-    rotateMatrix.setRotate(120f, 0f, 0f)
-    setOnClickListener {
-      if (kai) {
-        reset()
-      } else {
-        appearItachi().start()
-      }
-      kai = !kai
-    }
-  }
 
   override fun onDraw(canvas: Canvas) {
     super.onDraw(canvas)
@@ -47,6 +40,7 @@ class Itachi : Sharingan {
     canvas.restore()
   }
 
+  //<editor-fold desc="万花筒-鼬">
   private fun drawItachi(canvas: Canvas) {
     canvas.save()
     canvas.rotate(30f)
@@ -63,20 +57,29 @@ class Itachi : Sharingan {
     }
 
   private val itachiPath = Path()
+
   private fun obtainItachiPath(): Path {
     itachiPath.reset()
     itachiPath.moveTo(pA.x, pA.y)
     for (d in 0 until 360 step 120) {
       itachiPath.quadTo(pC1.x, pC1.y, pB.x, pB.y)
-      rotatePoint(pA, rotateMatrix)
+      rotatePoint(pA)
       itachiPath.quadTo(pC2.x, pC2.y, pA.x, pA.y)
-      rotatePoint(pC1, rotateMatrix)
-      rotatePoint(pB, rotateMatrix)
-      rotatePoint(pC2, rotateMatrix)
+      rotatePoint(pC1)
+      rotatePoint(pB)
+      rotatePoint(pC2)
     }
     itachiPath.addCircle(0f, 0f, itachiRadius * 0.125f, Path.Direction.CCW)
     itachiPath.fillType = Path.FillType.WINDING
     return itachiPath
+  }
+
+  private val rotateMatrix = Matrix()//旋转120度
+  private fun rotatePoint(point: PointF) {
+    val array = floatArrayOf(point.x, point.y)
+    rotateMatrix.mapPoints(array)
+    point.x = array[0]
+    point.y = array[1]
   }
 
   private val pA = PointF()
@@ -84,6 +87,7 @@ class Itachi : Sharingan {
   private val pC1 = PointF()
   private val pC2 = PointF()
 
+  // 用来构造path的点
   private fun updatePoints() {
     val innerRadius = itachiRadius * 0.3f
     // point A
@@ -110,12 +114,19 @@ class Itachi : Sharingan {
     pC2.x = array[0]
     pC2.y = array[1]
   }
+  //</editor-fold>
 
-  private fun rotatePoint(point: PointF, matrix: Matrix) {
-    val array = floatArrayOf(point.x, point.y)
-    matrix.mapPoints(array)
-    point.x = array[0]
-    point.y = array[1]
+
+  //<editor-fold desc="动画">
+  private fun animateOnClick() {
+    setOnClickListener {
+      if (kai) {
+        reset()
+      } else {
+        appearItachi().start()
+      }
+      kai = !kai
+    }
   }
 
   private fun appearItachi(): Animator {
@@ -131,11 +142,13 @@ class Itachi : Sharingan {
     return finalSet
   }
 
+
   override fun reset() {
     super.reset()
     itachiRadius = 0f
     updatePoints()
     invalidate()
   }
+  //</editor-fold>
 
 }
