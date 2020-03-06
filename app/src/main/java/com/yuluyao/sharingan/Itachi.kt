@@ -21,12 +21,6 @@ class Itachi : Sharingan {
     animateOnClick()
   }
 
-  init {
-  }
-
-  private var kai = false
-
-
   override fun onDraw(canvas: Canvas) {
     super.onDraw(canvas)
     canvas.save()
@@ -118,6 +112,8 @@ class Itachi : Sharingan {
 
 
   //<editor-fold desc="动画">
+
+  private var kai = false
   private fun animateOnClick() {
     setOnClickListener {
       if (kai) {
