@@ -7,26 +7,13 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import android.view.animation.DecelerateInterpolator
 import kotlin.math.sqrt
 
 class Sasuke : Sharingan {
   constructor(context: Context) : super(context)
-  constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-
-  private var kai = false
-  private val rotateMatrix = Matrix()
-
-  init {
+  constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
     rotateMatrix.setRotate(60f)
-    setOnClickListener {
-      if (kai) {
-        reset()
-      } else {
-        appearSasuke().start()
-      }
-      kai = !kai
-    }
+    animateOnClick()
   }
 
   override fun onDraw(canvas: Canvas) {
@@ -38,27 +25,19 @@ class Sasuke : Sharingan {
     paint.color = Color.BLACK
     paint.strokeWidth = mRadius * 0.03f
     paint.style = Paint.Style.STROKE
-    val arc6Path = obtainSasukePath()
-    canvas.drawPath(arc6Path, paint)
+    val complexArcPath = obtainComplexArcPath()
+    canvas.drawPath(complexArcPath, paint)
 
     // 画黑色区域与圆点
     paint.color = primaryColor
     paint.style = Paint.Style.FILL
-    val blackPath = obtainBlack(arc6Path)
+    val blackPath = obtainBlack(complexArcPath)
     canvas.drawPath(blackPath, paint)
 
     canvas.restore()
   }
 
-
-  private var outerRadius = 0F
-  private val outerRectF = RectF()
-
-  private fun updateOuterRectF() {
-    outerRadius = sqrt(2.0f) * sasukeRadius
-    outerRectF.set(-outerRadius, sasukeRadius - outerRadius, outerRadius, sasukeRadius + outerRadius)
-  }
-
+  //<editor-fold desc="交叉圆弧">
   var sasukeRadius = 0F
     set(value) {
       field = value
@@ -66,37 +45,45 @@ class Sasuke : Sharingan {
       invalidate()
     }
 
-  private val sasukePath = Path()
+  private var arcRadius = 0F
+  private val arcRectF = RectF()
 
-  // 万花筒的6条弧线，其中1条
-  private val arcPath = Path()
+  private fun updateOuterRectF() {
+    arcRadius = sqrt(2.0f) * sasukeRadius
+    arcRectF.set(-arcRadius, sasukeRadius - arcRadius, arcRadius, sasukeRadius + arcRadius)
+  }
 
-  private fun obtainSasukePath(): Path {
-    sasukePath.reset()
+  private val complexArcPath = Path()
+  private val arcPath = Path() // 万花筒的6条弧线，其中1条
+  private val rotateMatrix = Matrix() //旋转60度
+  private fun obtainComplexArcPath(): Path {
+    complexArcPath.reset()
     arcPath.reset()
 
     arcPath.moveTo(-sasukeRadius, 0f)
-    arcPath.arcTo(outerRectF, -135f, 90f)
+    arcPath.arcTo(arcRectF, -135f, 90f)
 
     var i = 0
     while (i++ < 6) {
       arcPath.transform(rotateMatrix)
-      sasukePath.addPath(arcPath)
+      complexArcPath.addPath(arcPath)
     }
-    return sasukePath
+    return complexArcPath
   }
+  //</editor-fold>
 
+  //<editor-fold desc="黑色区域和黑色中心">
   var primaryColor = Color.TRANSPARENT
     set(value) {
       field = value
       invalidate()
     }
 
-  private val blackArea = Path()
+  private val blackPath = Path()
   private val circle = Path()
   private val dot = Path()
   private fun obtainBlack(dst: Path): Path {
-    blackArea.reset()
+    blackPath.reset()
     circle.reset()
     dot.reset()
 
@@ -105,11 +92,24 @@ class Sasuke : Sharingan {
     // 中心的圆点
     dot.addCircle(0f, 0f, sasukeRadius * 0.15f, Path.Direction.CCW)
 
-    blackArea.op(dst, circle, Path.Op.XOR)
-    blackArea.op(dot, Path.Op.XOR)
-    return blackArea
+    blackPath.op(dst, circle, Path.Op.XOR)
+    blackPath.op(dot, Path.Op.XOR)
+    return blackPath
   }
+  //</editor-fold>
 
+  //<editor-fold desc="动画">
+  private var kai = false
+  private fun animateOnClick() {
+    setOnClickListener {
+      if (kai) {
+        reset()
+      } else {
+        appearSasuke().start()
+      }
+      kai = !kai
+    }
+  }
 
   private fun appearSasuke(): Animator {
     val a = ObjectAnimator.ofFloat(this, "sasukeRadius", mRadius)
@@ -134,6 +134,7 @@ class Sasuke : Sharingan {
     updateOuterRectF()
     invalidate()
   }
+  //</editor-fold>
 
 
 }
