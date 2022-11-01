@@ -59,52 +59,50 @@ open class Eye : View {
 
   // 眼睛整个半径，包含外部黑色圆圈
   protected var mRadiusWithBorder = 0F
+
   // 眼睛半径，不包含外部黑色圆圈
   protected var mRadius = 0F
+
   // 圆心坐标
   protected var centerCoordinate = floatArrayOf(0f, 0f)
+
+  private val border = Path()
+
+  private val gradient by lazy {
+    RadialGradient(0f, 0f, mRadius, intArrayOf(0x44000000, 0x00000000, 0x44000000), floatArrayOf(0f, 0.6f, 1f),
+      Shader.TileMode.CLAMP)
+  }
 
   override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
     mRadiusWithBorder = min(w.toFloat() - paddingLeft - paddingRight, h.toFloat() - paddingTop - paddingBottom) / 2
     mRadius = mRadiusWithBorder * 0.94f
     centerCoordinate[0] = (w.toFloat() + paddingLeft - paddingRight) / 2
     centerCoordinate[1] = (h.toFloat() + paddingTop - paddingBottom) / 2
+    border.addCircle(0f, 0f, mRadiusWithBorder, Path.Direction.CW)
+    border.addCircle(0f, 0f, mRadius, Path.Direction.CCW)
+    border.fillType = Path.FillType.WINDING
   }
 
-  private val ring = Path()
   override fun onDraw(canvas: Canvas) {
     canvas.save()
     canvas.translate(centerCoordinate[0], centerCoordinate[1])
 
-    // out ring
-    paint.style = Paint.Style.FILL
+    // out border
     paint.color = Color.BLACK
-    ring.addCircle(0f, 0f, mRadiusWithBorder, Path.Direction.CW)
-    ring.addCircle(0f, 0f, mRadius, Path.Direction.CCW)
-    ring.fillType = Path.FillType.WINDING
-    canvas.drawPath(ring, paint)
-
-    // red background
     paint.style = Paint.Style.FILL
+    canvas.drawPath(border, paint)
+
+    // fill with red
     paint.color = 0xffac0003.toInt()
+    paint.style = Paint.Style.FILL
     canvas.drawCircle(0f, 0f, mRadius, paint)
 
-    // shader
-    paint.shader = obtainShader()
+    // gradient shader
+    paint.shader = gradient
     canvas.drawCircle(0f, 0f, mRadius, paint)
     paint.shader = null
 
     canvas.restore()
-  }
-
-  private var shader: Shader? = null
-  private fun obtainShader(): Shader {
-    if (shader == null) {
-      shader = RadialGradient(0f, 0f, mRadius,
-        intArrayOf(0x44000000, 0x00000000, 0x44000000), floatArrayOf(0f, 0.6f, 1f),
-        Shader.TileMode.CLAMP)
-    }
-    return shader!!
   }
 
 }

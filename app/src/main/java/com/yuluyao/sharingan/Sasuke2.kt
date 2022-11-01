@@ -14,7 +14,6 @@ import kotlin.math.tan
 class Sasuke2 : Sharingan {
   constructor(context: Context) : super(context)
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-    rotateMatrix.setRotate(60f)
     animateOnClick()
   }
 
@@ -74,7 +73,7 @@ class Sasuke2 : Sharingan {
       invalidate()
     }
 
-  private val rotateMatrix = Matrix() // 旋转60度
+  private val rotateMatrix = Matrix().apply { setRotate(60f) } // 旋转60度
 
 
   private val complexBezierPath = Path()

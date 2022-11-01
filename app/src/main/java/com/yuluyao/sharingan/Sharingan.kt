@@ -23,8 +23,8 @@ open class Sharingan : Eye {
 
   override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
     super.onSizeChanged(w, h, oldw, oldh)
-    gouRadius = mRadius * 0.125f
     centerRadius = mRadius * 0.15f
+    gouRadius = mRadius * 0.125f
   }
 
   override fun onDraw(canvas: Canvas) {
@@ -37,9 +37,9 @@ open class Sharingan : Eye {
     drawCenterDot(canvas)
 
     // middle ring
+    paint.color = middleRingColor
     paint.style = Paint.Style.STROKE
     paint.strokeWidth = mRadius * 0.03f
-    paint.color = middleRingColor
     val middleRingRadius = mRadius * 0.6f
     drawMiddleRing(canvas, middleRingRadius)
 
@@ -108,17 +108,18 @@ open class Sharingan : Eye {
   //</editor-fold>
 
   protected fun disappearSharingan(): Animator {
+    // 勾玉变小
     val a = ObjectAnimator.ofFloat(this, "gouRadius", 0f)
-    a.interpolator = AccelerateInterpolator()
+    // 中心黑点变小
     val b = ObjectAnimator.ofFloat(this, "centerRadius", 0f)
-    b.interpolator = AccelerateInterpolator()
+    // 圆圈变淡
     val c = ObjectAnimator.ofInt(this, "middleRingColor", Color.TRANSPARENT)
     c.setEvaluator(ArgbEvaluator())
-    c.interpolator = AccelerateInterpolator()
 
     val disappearSet = AnimatorSet()
     disappearSet.playTogether(a, b, c)
     disappearSet.duration = 500
+    disappearSet.interpolator = AccelerateInterpolator()
     return disappearSet
   }
 

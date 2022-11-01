@@ -12,7 +12,6 @@ import kotlin.math.sqrt
 class Sasuke : Sharingan {
   constructor(context: Context) : super(context)
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-    rotateMatrix.setRotate(60f)
     animateOnClick()
   }
 
@@ -55,7 +54,7 @@ class Sasuke : Sharingan {
 
   private val complexArcPath = Path()
   private val arcPath = Path() // 万花筒的6条弧线，其中1条
-  private val rotateMatrix = Matrix() //旋转60度
+  private val rotateMatrix = Matrix().apply { setRotate(60f) } //旋转60度
   private fun obtainComplexArcPath(): Path {
     complexArcPath.reset()
     arcPath.reset()

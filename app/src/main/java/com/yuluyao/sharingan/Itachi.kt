@@ -17,7 +17,6 @@ import kotlin.math.sqrt
 class Itachi : Sharingan {
   constructor(context: Context) : super(context)
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-    rotateMatrix.setRotate(120f, 0f, 0f)
     animateOnClick()
   }
 
@@ -68,7 +67,7 @@ class Itachi : Sharingan {
     return itachiPath
   }
 
-  private val rotateMatrix = Matrix()//旋转120度
+  private val rotateMatrix = Matrix().apply { setRotate(120f, 0f, 0f) }//旋转120度
   private fun rotatePoint(point: PointF) {
     val array = floatArrayOf(point.x, point.y)
     rotateMatrix.mapPoints(array)
@@ -130,11 +129,11 @@ class Itachi : Sharingan {
     a.duration = 500
     a.interpolator = DecelerateInterpolator()
 
-    val appearItachiSet = AnimatorSet()
-    appearItachiSet.playTogether(a)
+//    val appearItachiSet = AnimatorSet()
+//    appearItachiSet.playTogether(a)
 
     val finalSet = AnimatorSet()
-    finalSet.playSequentially(disappearSharingan(), appearItachiSet)
+    finalSet.playSequentially(disappearSharingan(), a)
     return finalSet
   }
 
